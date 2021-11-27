@@ -44,7 +44,7 @@ Very large (>1MB) and very short (<100 tokens) files were filtered out. Files we
 Training took ca. 3 weeks on 8 NVIDIA RTX 8000 GPUs, largely following the standard [2-7B.yml](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) values except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size, data split, initial loss scale, and print/eval intervals.
 
 The below image shows the loss curve of the training process on validation data.
-![image](https://user-images.githubusercontent.com/1426353/143721005-d535bc60-f04c-4592-a0e9-45738c2180d2.png)
+![image](https://user-images.githubusercontent.com/1426353/143721136-fbdf6a6a-d1bb-455c-801b-5c86719ec632.png)
 
 ### Caveats
 The trained model has a few minor known limitations:
