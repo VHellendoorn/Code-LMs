@@ -37,18 +37,18 @@ The final, filtered dataset size is as follows:
 
 |Language|Repositories|Size(GB)|Files|
 |------|-----|-----|-------|
-|C | 10749 | 52G | 3,037,112 |
-|C# | 9511 | 4.1G | 2,514,494 |
-|C++ | 13726 | 22G | 4,289,506 |
-|Go | 12371 | 3.5G | 1,416,789 |
-|Java | 15044 | 55G | 5,120,129 |
-|JavaScript | 25144 | 41G | 1,774,174 |
-|PHP | 9960 | 9.2G | 1,714,058 |
-|Python | 25446 | 21G | 1,550,208 |
-|Ruby | 5826 | 13G | 674,343 |
-|Rust | 4991 | 15G | 304,842 |
-|Scala | 1497 | 1.8G | 245,100 |
-|TypeScript | 12830 | 16G | 1,441,926 |
+|C | 10,749 | 55G | 3,037,112 |
+|C# | 9,511 | 21G | 2,514,494 |
+|C++ | 13,726 | 52G | 4,289,506 |
+|Go | 12,371 | 15G | 1,416,789 |
+|Java | 15,044 | 41G | 5,120,129 |
+|JavaScript | 25,144 | 22G | 1,774,174 |
+|PHP | 9,960 | 13G | 1,714,058 |
+|Python | 25,446 | 16G | 1,550,208 |
+|Ruby | 5,826 | 4.1G | 674,343 |
+|Rust | 4,991 | 3.5G | 304,842 |
+|Scala | 1,497 | 1.8G | 245,100 |
+|TypeScript | 12,830 | 9.2G | 1,441,926 |
 
 ### Data Collectioon & Filtering
 I cloned the most popular repositories for 11 popular programming languages with at least 50 stars (stopping at ~25K per langauge) from GitHub in October 2021. For each project, each file belonging to the majority-language of that project was extracted, yielding the training set below (after cleaning). This initial, unfiltered dataset spanned 631GB and 38.9M files.
