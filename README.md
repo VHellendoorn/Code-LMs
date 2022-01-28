@@ -1,27 +1,39 @@
 # Large Models of Source Code
 I occasionally train and publicly release large neural language models on programs. Here, I describe how to use these.
 
-## 2.7B Model of Assorted Languages
-This is a 32 layer, 2,560 dimensional Transformer model on a [large corpus](#data-characteristics) of code from across 11 programming languages, trained for 100K steps using the [GPT-neox](https://github.com/EleutherAI/gpt-neox) toolkit.
+## Availability & Usage
+Note (01/28, 2022): these instructions have been updated to make it easier to swap out different pre-trained models in the same base Docker image. New models are being pushed over the next few days.
 
-### Availability & Usage
-**Via DockerHub (recommended):** A public image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) containing the final model checkpoint has been [pushed to DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/neox-2-7b-code). The image size is 15GB and the model will require 6GB of GPU memory to run (running on CPU is neither tested nor recommended). Acquire and run it with the following commands (substituting another GPU device index if needed):
+### Via DockerHub (Recommended)
+A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox). This image can be used together with a checkpoint file hosted on this [public Google Drive folder](https://drive.google.com/drive/folders/1Y5jRdLJmP6bJbJTadbylmvfQKAZuLC6p?usp=sharing). The base image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
+
+Download and untar a checkpoint file to a directory called `checkpoints/`. Then, start the container with the following commands (substituting another GPU device index if needed):
 ```
-nvidia-docker run --rm -it -e NVIDIA_VISIBLE_DEVICES=0 --shm-size=1g --ulimit memlock=-1 vhellendoorn/neox-2-7b-code:trained100K
-cd /gpt-neox
-sudo ./deepy.py text_gen_gpt2.py -d checkpoints/configs 2-7B.yml text_generation.yml local_setup.yml
+nvidia-docker run --rm -it -e NVIDIA_VISIBLE_DEVICES=0 --shm-size=1g --ulimit memlock=-1 --mount type=bind,src=$PWD/checkpoints,dst=/gpt-neox/checkpoints vhellendoorn/code-lms-neox
+sudo ./deepy.py generate.py configs/text_generation.yml checkpoints/configs/local_setup.yml checkpoints/configs/2-7B.yml
 ```
+**Note:** if not using the 2-7B parameter model, replace the final config file with the appropriate model size (e.g., `small` = 160M parameters, `medium` = 405M).
 
-Once up, you can feed it an example such as `def return1():\n  """Returns 1."""\n  ` (note the whitespace) and watch it predict `return 1` (and then probably a bunch of other `returnX` methods, depending on the sample).
+### Usage
+Once the container is up, you can feed it an example such as `def return1():\n  """Returns 1."""\n  ` (note the whitespace tokens) and watch it predict `return 1` (and then probably a bunch of other `returnX` methods, depending on the sample).
 
-The modifications to gpt-neox mentioned above center around the need to allow tabs and newlines in the prompt input. For the _interactive_ mode, these can be added using their escaped versions (`\t`, `\n`); when using file-based input, the project will read the entire file instead of treating each line as a prompt. By default, the command below will create an interactive prompt and return relatively short outputs (128 tokens) with a sampling temperature of 0.8; this behavior can be changed in `/gpt-neox/checkpoints/configs/text_generation.yml`.
+The modifications to gpt-neox mentioned above center around the need to allow tabs and newlines in the prompt input. For the _interactive_ mode, these can be added using their escaped versions (`\t`, `\n`); when using file-based input, the project will read the entire file instead of treating each line as a prompt. By default, the command below will create an interactive prompt and return relatively short outputs (256 tokens) with a sampling temperature of 0.5; this behavior can be changed in `/gpt-neox/checkpoints/configs/text_generation.yml`.
 
 A lower temperature (e.g., 0.2) will produce more consistent and plausible (to the model) predictions; a higher temperature such as the default may be useful for generating and evaluating many candidates (see the [Codex paper](https://arxiv.org/pdf/2107.03374) for recommendations). For the latter setting, consider switching to the `input-file` mode and providing an entire snippet (without escaping whitespace) in the corresponding file
 
-For those preferring to use just the checkpointed model, please find it (plus vocabulary files and configs) on this public [Google Drive](https://drive.google.com/file/d/1qLsQMBDyIZ2CZgr1unsteGHWGQz8J2fi/view?usp=sharing). Note the point above, about the need for allowing tabs and newlines when using this model.
+## Models Trained on a 249GB Multi-lingual Corpus
+Several models have been trained on a [large corpus](#data-characteristics) of code spanning 11 programming languages. This includes a 2.7B parameter model (trained for 100K and 150K steps), a 405M parameter model (100K steps) and a 160M parameter model (coming soon).
+
+### Available Models
+All models are available [at a public Google Drive folder](https://drive.google.com/drive/folders/1Y5jRdLJmP6bJbJTadbylmvfQKAZuLC6p?usp=sharing), in the form of Tar files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
+
+* **GPT2 - 2.7B:** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
+  * Note that GPT-Neox' [default config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) for this model was modified to reduce the number of training steps (and learning rate decay steps accordingly) to 160K, down from 320K, to better match the available training resources. Hence, this model may not have reached its peak performance.
+* **GPT2 - 0.4B:** A 24 layer, 1,024 dimensional Transformer model based on the [`medium` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/medium.yml), trained with 256K tokens per batch.
+* **GPT2 - 160M (Training in progress!):** A 12 layer, 768 dimensional Transformer model based on the [`small` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/small.yml), trained with 256K tokens per batch.
 
 ### Data Characteristics
-I cloned the most popular repositories for 11 popular programming languages with at least 50 stars (stopping at ~25K per langauge) from GitHub in October 2021. For each project, each file belonging to the majority-language of that project was extracted, yielding the training set below.
+The final, filtered dataset size is as follows:
 
 |Language|Repositories|Size(GB)|Files|
 |------|-----|-----|-------|
@@ -38,16 +50,20 @@ I cloned the most popular repositories for 11 popular programming languages with
 |Scala | 1497 | 1.8G | 245,100 |
 |TypeScript | 12830 | 16G | 1,441,926 |
 
+### Data Collectioon & Filtering
+I cloned the most popular repositories for 11 popular programming languages with at least 50 stars (stopping at ~25K per langauge) from GitHub in October 2021. For each project, each file belonging to the majority-language of that project was extracted, yielding the training set below (after cleaning). This initial, unfiltered dataset spanned 631GB and 38.9M files.
+
+Next, similar to Codex and CodeParrot, very large (>1MB) and very short (<100 tokens) files were filtered out, reducing the dataset to 424GB. Files were then deduplicated based on a hash of their content, which reduced the number of files by another 30% or so, leaving 249GB of data and 24.1M files. No tokenization filters were applied; the model processes entire files including all comments. A code-specific vocabulary was constructed on a random 5% subset of the files above.
+
 ### Training Process
-Very large (>1MB) and very short (<100 tokens) files were filtered out. Files were deduplicated based on a hash of their content, which reduced the dataset by nearly 30%. Otherwise, no tokenization filters were applied; the model processes entire files including all comments. A code-specific vocabulary was constructed on a random 5% subset of the files above. The model was then trained for 100K steps, each of which consisted of a batch 128 samples with 2,048 tokens each.
+Training was done on 4 to 8 NVIDIA RTX 8000 GPUs, largely following the standard config values, except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size (see [model details](#available-models)), data split (changed to 98.9%, 0.1%, 1%), initial loss scale (2^16), and print/eval intervals.
 
-Training took ca. 3 weeks on 8 NVIDIA RTX 8000 GPUs, largely following the standard [2-7B.yml](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) values except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size, data split, initial loss scale, and print/eval intervals.
-
-The below image shows the loss curve of the training process on validation data.
-![image](https://user-images.githubusercontent.com/1426353/143721136-fbdf6a6a-d1bb-455c-801b-5c86719ec632.png)
+The below image shows the loss curve of the various models' training process in terms of validation loss.
+![image](https://user-images.githubusercontent.com/1426353/151620489-5dbf5baf-2260-4143-8f17-12d469cccac0.png)
+This image will be updated once 150K step training runs complete for the medium and small models.
 
 ### Caveats
-The trained model has a few minor known limitations:
+The trained models come with a few minor known limitations:
 - This model was not trained to solve programming problems, and may not perform well on a benchmark such as [HumanEval](https://github.com/openai/human-eval). Models like Codex (powering Copilot) are pretrained on natural language, which may boost their ability to interpret NL prompts; this model only learned language from comments in code.
 - The model appears to start generating a random new file once it reaches the (predicted) end of the current one. It is possible that the end-of-document token was not properly added to the training data.
 - Whitespace is **very important** to the model, since no preprocessing was done on the input files. For instance, the following snippet will yield poor predictions, because in Java we would never expect an instance-method at the top-level, as is indicated by the single level of (`\t`) indentation of the two lines within this method:
