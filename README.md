@@ -22,7 +22,7 @@ The modifications to gpt-neox mentioned above center around the need to allow ta
 A lower temperature (e.g., 0.2) will produce more consistent and plausible (to the model) predictions; a higher temperature such as the default may be useful for generating and evaluating many candidates (see the [Codex paper](https://arxiv.org/pdf/2107.03374) for recommendations). For the latter setting, consider switching to the `input-file` mode and providing an entire snippet (without escaping whitespace) in the corresponding file
 
 ## Models Trained on a 249GB Multi-lingual Corpus
-Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (trained for 100K and 150K steps), a 405M parameter model (100K steps) and a 160M parameter model (coming soon).
+Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (trained for 100K and 150K steps), a 405M parameter model (100K & 150K steps) and a 160M parameter model (150K steps).
 
 ### Available Models
 All models are available [at a public Google Drive folder](https://drive.google.com/drive/folders/1Y5jRdLJmP6bJbJTadbylmvfQKAZuLC6p?usp=sharing), in the form of Tar files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
@@ -59,8 +59,7 @@ Next, similar to Codex and CodeParrot, very large (>1MB) and very short (<100 to
 Training was done on 4 to 8 NVIDIA RTX 8000 GPUs, largely following the standard config values, except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size (see [model details](#available-models)), data split (changed to 98.9%, 0.1%, 1%), initial loss scale (2^16), and print/eval intervals.
 
 The below image shows the loss curve of the various models' training process in terms of validation loss.
-![image](https://user-images.githubusercontent.com/1426353/151620489-5dbf5baf-2260-4143-8f17-12d469cccac0.png)
-This image will be updated once 150K step training runs complete for the medium and small models.
+![image](https://user-images.githubusercontent.com/1426353/153651075-a0ceb8ef-6207-4853-b801-40dd6172d5a6.png)
 
 ### Caveats
 The trained models come with a few minor known limitations:
