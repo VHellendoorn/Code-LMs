@@ -16,7 +16,7 @@ def main():
 	next_max_stars = 1_000_000_000  # Initialize to a very high value.
 	with open(f'TopLists/{LANGUAGE}-top-repos.txt', 'w') as f:
 		while len(repositories) < NUM_REPOS:
-			results = run_query(max_stars)  # Get the next set of pages.
+			results = run_query(next_max_stars)  # Get the next set of pages.
 			if not results:
 				break
 			new_repositories = [repository for repository, _ in results]
