@@ -8,6 +8,9 @@ import openai
 import shutil
 import pathlib
 
+languages_to_run = {'C', 'C#', 'C++', 'Go', 'Java', 'JavaScript', 
+                    'PHP', 'Python', 'Ruby', 'Rust', 'Scala', 'TypeScript'}
+
 # The private OpenAI API key needs to be an environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
 # As instructed here: https://community.openai.com/t/token-logprobs-when-echo-is-true/9626/2
@@ -59,6 +62,8 @@ if __name__ == '__main__':
     excluded_dirs = args.dirs + '-excluded'
     pathlib.Path(excluded_dirs).mkdir(parents=True, exist_ok=True)
     for language in dirs:
+        if language not in languages_to_run:
+            continue
         print('Language:', language)
         files = glob.glob(os.path.join(language, '**/*'), recursive=True)
         files = [f for f in files if os.path.isfile(f)]
