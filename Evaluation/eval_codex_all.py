@@ -62,7 +62,7 @@ if __name__ == '__main__':
     excluded_dirs = args.dirs + '-excluded'
     pathlib.Path(excluded_dirs).mkdir(parents=True, exist_ok=True)
     for language in dirs:
-        if language not in languages_to_run:
+        if language.split('/')[-1] not in languages_to_run:
             continue
         print('Language:', language)
         files = glob.glob(os.path.join(language, '**/*'), recursive=True)
