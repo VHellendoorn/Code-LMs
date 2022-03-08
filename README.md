@@ -75,3 +75,35 @@ Adjusting the indentation makes it predict more reasonable continuations:
 public int getTotalWeight(List<Integer> weights) {\n\t\t// Sum weights in parallel.\n\t\treturn 
 ```
 The Codex model discusses controlling for this to increase usability; this may be worth doing in a future version of the model.
+
+## Evaluation
+
+### Evaluating Codex
+To download the test sets that we used in the paper (12 programming languages), use:
+```
+wget https://zenodo.org/record/6338015/files/unseen_test_sets.tar.gz
+tar -xvzf unseen_test_sets.tar.gz
+```
+
+and then:
+```
+export OPENAI_API_KEY=<YOUR OPEN AI API KEY>
+python3 -u Evaluation/eval_codex_all.py --dirs Code-sampled100
+```
+
+Where `<YOUR OPEN AI API KEY>` is a private string that can be obtained by signing up for[OpenAI's beta](https://beta.openai.com/account/api-keys).
+
+As of **March 2022**, getting an API Key is free for 3 months, and afterwards a credit card is need to be entered. However, even after entering a credit card, using our evaluation script does not lead to any costs.
+
+## Citation
+
+[A Systematic Evaluation of Large Language Models of Code](https://arxiv.org/pdf/2202.13169)
+
+```
+@article{xu2022systematic,
+  title={A Systematic Evaluation of Large Language Models of Code},
+  author={Xu, Frank F and Alon, Uri and Neubig, Graham and Hellendoorn, Vincent J},
+  journal={arXiv preprint arXiv:2202.13169},
+  year={2022}
+}
+```
