@@ -63,7 +63,11 @@ The Codex model discusses controlling for this to increase usability; this may b
 ## Datasets
 
 ### 249GB Multi-Lingual Corpus
-This is the corpus used to train PolyCoder. The data collection and filtering process is described in detail in [the paper](https://arxiv.org/pdf/2202.13169.pdf) and below. The final, filtered dataset statistics are:
+This is the corpus used to train PolyCoder. 
+
+The list of file paths and GitHub commit SHAs that allow reproducing our dataset can be downloaded from: [https://zenodo.org/record/6341643/files/index.zip](https://zenodo.org/record/6341643/files/index.zip).
+
+The data collection and filtering process is described in detail in [the paper](https://arxiv.org/pdf/2202.13169.pdf) and below. The final, filtered dataset statistics are:
 
 |Language|Repositories|Size(GB)|Files|
 |------|-----|-----|-------|
