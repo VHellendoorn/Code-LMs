@@ -11,9 +11,20 @@ I occasionally train and publicly release large neural language models on progra
 ## Getting Started
 
 **Via DockerHub (Recommended):**
-A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox). This image can be used together with a checkpoint file hosted on this [public Google Drive folder](https://drive.google.com/drive/folders/1Y5jRdLJmP6bJbJTadbylmvfQKAZuLC6p?usp=sharing). The base image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
+A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox). 
 
-Download and untar a checkpoint file to a directory called `checkpoints/`. Then, start the container with the following commands (substituting another GPU device index if needed):
+This image can be used together with a checkpoint file hosted on this [public Zenodo deposit](https://zenodo.org/record/6344914). The base image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
+
+Download and untar a checkpoint file to a directory called `checkpoints/`, by:
+
+```
+mkdir checkpoints
+cd checkpoints
+wget https://zenodo.org/record/6344914/files/2-7B-150K.tar
+tar -xvf 2-7B-150K.tar
+```
+
+ Then, start the container with the following commands (substituting another GPU device index if needed):
 ```
 nvidia-docker run --rm -it -e NVIDIA_VISIBLE_DEVICES=0 --shm-size=1g --ulimit memlock=-1 --mount type=bind,src=$PWD/checkpoints,dst=/gpt-neox/checkpoints vhellendoorn/code-lms-neox:base
 sudo ./deepy.py generate.py configs/text_generation.yml checkpoints/configs/local_setup.yml checkpoints/configs/2-7B.yml
@@ -32,12 +43,12 @@ A lower temperature (e.g., 0.2) will produce more consistent and plausible (to t
 Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (nick-named **PolyCoder**, trained for 100K and 150K steps), a 405M parameter model (100K & 150K steps) and a 160M parameter model (150K steps).
 
 ### Available Models
-All models are available [at a public Google Drive folder](https://drive.google.com/drive/folders/1Y5jRdLJmP6bJbJTadbylmvfQKAZuLC6p?usp=sharing), in the form of Tar files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
+All models are available [at a public Zenodo deposit](https://zenodo.org/record/6344914), in the form of `.tar` files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
 
-* **GPT2 - 2.7B:** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
+* **[GPT2 - 2.7B](https://zenodo.org/record/6344914/files/2-7B-150K.tar):** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
   * Note that GPT-Neox' [default config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) for this model was modified to reduce the number of training steps (and learning rate decay steps accordingly) to 160K, down from 320K, to better match the available training resources. Hence, this model may not have reached its peak performance.
-* **GPT2 - 0.4B:** A 24 layer, 1,024 dimensional Transformer model based on the [`medium` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/medium.yml), trained with 256K tokens per batch.
-* **GPT2 - 160M:** A 12 layer, 768 dimensional Transformer model based on the [`small` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/small.yml), trained with 256K tokens per batch.
+* **[GPT2 - 0.4B](https://zenodo.org/record/6344914/files/0-4B-150K.tar):** A 24 layer, 1,024 dimensional Transformer model based on the [`medium` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/medium.yml), trained with 256K tokens per batch.
+* **[GPT2 - 160M](https://zenodo.org/record/6344914/files/160M-150K.tar):** A 12 layer, 768 dimensional Transformer model based on the [`small` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/small.yml), trained with 256K tokens per batch.
 
 ### Training Process
 Training was done on 4 to 8 NVIDIA RTX 8000 GPUs, largely following the standard config values, except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size (see [model details](#available-models)), data split (changed to 98.9%, 0.1%, 1%), initial loss scale (2^16), and print/eval intervals.
