@@ -104,9 +104,49 @@ export OPENAI_API_KEY=<YOUR OPEN AI API KEY>
 python3 -u Evaluation/eval_codex_all.py --dirs Code-sampled100
 ```
 
-Where `<YOUR OPEN AI API KEY>` is a private string that can be obtained by signing up for[OpenAI's beta](https://beta.openai.com/account/api-keys).
+Where `<YOUR OPEN AI API KEY>` is a private string that can be obtained by signing up for [OpenAI's beta](https://beta.openai.com/account/api-keys).
 
 As of **March 2022**, getting an API Key is free for 3 months, and afterwards a credit card needs to be entered. However, even after entering a credit card, using our evaluation script does not lead to any costs.
+
+### Results - HumanEval
+These are PolyCoder's results on the [HumanEval benchmark](https://github.com/openai/human-eval):
+
+|Model|Pass@1|Pass@10|Pass@100|
+|------|-----|-----|-------|
+|PolyCoder (160M) | 2.13% | 3.35% | 4.88% |
+|PolyCoder (400M) | 2.96% | 5.29% | 11.59% |
+|PolyCoder (2.7B) | 5.59% | 9.87% | 17.68% |
+| CodeParrot (110M) | 3.80% | 6.57% | 12.78% |
+| CodeParrot (1.5B) | 3.58% | 8.03% | 14.96% | 
+| GPT-Neo (125M) | 0.75% | 1.88% | 2.97% | 
+| GPT-Neo (1.3B) | 4.79% | 7.47% | 16.30% | 
+| GPT-Neo (2.7B) | 6.41% | 11.27% | 21.37% | 
+| GPT-J (6B) | 11.62% | 15.74% | 27.74% | 
+| Codex (300M) | 13.17% | 20.37% | 36.27% | 
+| Codex (2.5B) | 21.36% | 35.42% | 59.50% | 
+| Codex (12B) | 28.81% | 46.81% | 72.31% | 
+
+
+### Results - Multilingual Language Modeling
+These are the perplexity results of PolyCoder on the multilingual test sets:
+
+|Language| Perplexity |
+|------|-----|
+|C | 2.3464 |
+|C# | 2.5832 |
+|C++ | 2.9189 |
+|Go | 2.567 |
+|Java | 2.9194 |
+|JavaScript | 3.0611 |
+|PHP | 3.6954 |
+|Python | 3.1767 |
+|Ruby | 3.9742 |
+|Rust | 3.2449 |
+|Scala | 3.8735 |
+|TypeScript | 3.6143 |
+
+A comparison with the other models is available in Figure 6 in the paper:
+![image](images/fig6.png)
 
 ## Citation
 
