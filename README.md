@@ -43,7 +43,7 @@ A lower temperature (e.g., 0.2) will produce more consistent and plausible (to t
 Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (nick-named **PolyCoder**, trained for 100K and 150K steps), a 405M parameter model (100K & 150K steps) and a 160M parameter model (150K steps).
 
 ### Available Models
-All models are available [at a public Zenodo deposit](https://zenodo.org/record/6344914), in the form of `.tar` files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
+All models are available [at a public Zenodo repository](https://zenodo.org/record/6344914), in the form of `.tar` files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
 
 * **[GPT2 - 2.7B](https://zenodo.org/record/6344914/files/2-7B-150K.tar):** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
   * Note that GPT-Neox' [default config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) for this model was modified to reduce the number of training steps (and learning rate decay steps accordingly) to 160K, down from 320K, to better match the available training resources. Hence, this model may not have reached its peak performance.
