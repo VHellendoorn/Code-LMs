@@ -13,7 +13,7 @@ I occasionally train and publicly release large neural language models on progra
 **Via DockerHub (Recommended):**
 A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox). 
 
-This image can be used together with a checkpoint file hosted on this [public Zenodo deposit](https://zenodo.org/record/6344914). The base image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
+This image can be used together with a checkpoint file hosted on this [public Zenodo repository](https://zenodo.org/record/6344914). The base Docker image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
 
 Download and untar a checkpoint file to a directory called `checkpoints/`, by:
 
