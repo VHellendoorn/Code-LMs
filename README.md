@@ -76,7 +76,10 @@ The Codex model discusses controlling for this to increase usability; this may b
 ### 249GB Multi-Lingual Corpus
 This is the corpus used to train PolyCoder. 
 
-The list of file paths and GitHub commit SHAs that allow reproducing our dataset can be downloaded from: [https://zenodo.org/record/6341643/files/index.zip](https://zenodo.org/record/6341643/files/index.zip).
+The datasets were cloned overnight on October 9-10, 2021. To mine a similar training set, see [Data](https://github.com/VHellendoorn/Code-LMs/tree/main/Data).
+
+The list of file paths can be downloaded from: [https://zenodo.org/record/6341643/files/index.zip](https://zenodo.org/record/6341643/files/index.zip). 
+Each row in the file is the file path along with its SHA-256 hash, to ease deduplication. That is, the hashes allow checking if files from any future test set were already contained in the training set.
 
 The data collection and filtering process is described in detail in [the paper](https://arxiv.org/pdf/2202.13169.pdf) and below. The final, filtered dataset statistics are:
 
