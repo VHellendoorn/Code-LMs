@@ -13,14 +13,14 @@ I occasionally train and publicly release large neural language models on progra
 **Via DockerHub (Recommended):**
 A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox). 
 
-This image can be used together with a checkpoint file hosted on this [public Zenodo repository](https://zenodo.org/record/6344914). The base Docker image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
+This image can be used together with a checkpoint file hosted on this [public Zenodo repository](https://zenodo.org/record/6363556). The base Docker image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
 
 Download and untar a checkpoint file to a directory called `checkpoints/`, by:
 
 ```
 mkdir checkpoints
 cd checkpoints
-wget https://zenodo.org/record/6344914/files/2-7B-150K.tar
+wget https://zenodo.org/record/6363556/files/2-7B-150K.tar
 tar -xvf 2-7B-150K.tar
 ```
 
@@ -43,12 +43,12 @@ A lower temperature (e.g., 0.2) will produce more consistent and plausible (to t
 Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (nick-named **PolyCoder**, trained for 100K and 150K steps), a 405M parameter model (100K & 150K steps) and a 160M parameter model (150K steps).
 
 ### Available Models
-All models are available [at a public Zenodo repository](https://zenodo.org/record/6344914), in the form of `.tar` files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
+All models are available [at a public Zenodo repository](https://zenodo.org/record/6363556), in the form of `.tar` files with fairly self-explanatory names (e.g., 2-7B-100K => a 2.7B parameter model trained for 100K steps). Currently available models include:
 
-* **[GPT2 - 2.7B](https://zenodo.org/record/6344914/files/2-7B-150K.tar):** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
+* **[GPT2 - 2.7B](https://zenodo.org/record/6363556/files/2-7B-150K.tar):** A 32 layer, 2,560 dimensional Transformer model, trained with a batch size of 128 sequences (256K tokens). Models available both at 100K and at 150K steps steps.
   * Note that GPT-Neox' [default config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/2-7B.yml) for this model was modified to reduce the number of training steps (and learning rate decay steps accordingly) to 160K, down from 320K, to better match the available training resources. Hence, this model may not have reached its peak performance.
-* **[GPT2 - 0.4B](https://zenodo.org/record/6344914/files/0-4B-150K.tar):** A 24 layer, 1,024 dimensional Transformer model based on the [`medium` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/medium.yml), trained with 256K tokens per batch.
-* **[GPT2 - 160M](https://zenodo.org/record/6344914/files/160M-150K.tar):** A 12 layer, 768 dimensional Transformer model based on the [`small` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/small.yml), trained with 256K tokens per batch.
+* **[GPT2 - 0.4B](https://zenodo.org/record/6363556/files/0-4B-150K.tar):** A 24 layer, 1,024 dimensional Transformer model based on the [`medium` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/medium.yml), trained with 256K tokens per batch.
+* **[GPT2 - 160M](https://zenodo.org/record/6363556/files/160M-150K.tar):** A 12 layer, 768 dimensional Transformer model based on the [`small` config](https://github.com/EleutherAI/gpt-neox/blob/main/configs/small.yml), trained with 256K tokens per batch.
 
 ### Training Process
 Training was done on 4 to 8 NVIDIA RTX 8000 GPUs, largely following the standard config values, except also enabling "scaled-upper-triang-masked-softmax-fusion" and "bias-gelu-fusion" for performance and slightly changing the batch size (see [model details](#available-models)), data split (changed to 98.9%, 0.1%, 1%), initial loss scale (2^16), and print/eval intervals.
@@ -78,7 +78,7 @@ This is the corpus used to train PolyCoder.
 
 The datasets were cloned overnight on October 9-10, 2021. To mine a similar training set, see [Data](https://github.com/VHellendoorn/Code-LMs/tree/main/Data).
 
-The list of file paths can be downloaded from: [https://zenodo.org/record/6341643/files/index.zip](https://zenodo.org/record/6341643/files/index.zip). 
+The list of file paths can be downloaded from: [https://zenodo.org/record/6363556/files/index.zip](https://zenodo.org/record/6363556/files/index.zip). 
 Each row in the file is the file path along with its SHA-256 hash, to ease deduplication. That is, the hashes allow checking if files from any future test set were already contained in the training set.
 
 The data collection and filtering process is described in detail in [the paper](https://arxiv.org/pdf/2202.13169.pdf) and below. The final, filtered dataset statistics are:
@@ -108,7 +108,7 @@ Next, similar to Codex and CodeParrot, very large (>1MB) and very short (<100 to
 ### Evaluating Codex
 To download the test sets that we used in the paper (12 programming languages), use:
 ```
-wget https://zenodo.org/record/6338015/files/unseen_test_sets.tar.gz
+wget https://zenodo.org/record/6363556/files/unseen_test_sets.tar.gz
 tar -xvzf unseen_test_sets.tar.gz
 ```
 
@@ -142,7 +142,7 @@ These are PolyCoder's results on the [HumanEval benchmark](https://github.com/op
 
 
 ### Results - Multilingual Language Modeling
-These are the perplexity results of PolyCoder on the multilingual test sets:
+These are the perplexity results of PolyCoder on the [multilingual test sets](https://zenodo.org/record/6363556/files/unseen_test_sets.tar.gz):
 
 |Language| Perplexity |
 |------|-----|
