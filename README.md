@@ -9,16 +9,10 @@ I occasionally train and publicly release large neural language models on progra
 
 
 ## Getting Started
+All current models were trained using the [GPT NeoX toolkit](https://github.com/EleutherAI/gpt-neox). First, download a pretrained checkpoint as described below and then use this either with [a Docker image](#via-docker) or through our fork of this toolkit [from source](#from-source) to [generate code](#code-generation) or [replicate our evaluation](#evaluation).
 
-**Via DockerHub (Recommended):**
-A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox):
-```
-docker pull vhellendoorn/code-lms-neox:base
-```
-
-This image can be used together with a checkpoint file hosted on this [public Zenodo repository](https://zenodo.org/record/6363556). The base Docker image size is 5.4GB, and the model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended).
-
-Download and untar a checkpoint file to a directory called `checkpoints/`, by:
+### Retrieving Checkpoints
+Checkpoint files for training PolyCoder are hosted on this [public Zenodo repository](https://zenodo.org/record/6363556). See [this section](#models) for details on currently available models. Model checkpoints range up to 6GB, which is also the amount of GPU memory they require to run (running on CPU is neither tested nor recommended). Download and untar a checkpoint file (in this case for a 2.7B parameter model trained for 150K steps) to a directory called `checkpoints/`, using:
 
 ```
 mkdir checkpoints
@@ -27,22 +21,36 @@ wget https://zenodo.org/record/6363556/files/2-7B-150K.tar
 tar -xvf 2-7B-150K.tar
 ```
 
- Then, start the container with the following commands (substituting another GPU device index if needed):
+### From Source
+We maintain a public fork of the NeoX repository [here](https://github.com/frankxu2004/gpt-neox), which includes the (minor) changes we made to the codebase to allow for tabs & newlines in the tokenization, and also includes instructions for running the perplexity and HumanEval tasks. Note that this repository uses [a forked version](https://github.com/frankxu2004/lm-evaluation-harness) of the LM Evaluation Harness with the code benchmark from [our work](#citation).
+
+Building this repository should match the process for GPT-NeoX almost exactly. You may also use the Docker image mentioned next, but mounting a checkout of the latest version of this fork over the `/gpt-neox` directory inside the container. Once set up `generate.py` entrypoint (described [below](#code-generation)) for free-form code generation, or use one of the commands [here](https://github.com/frankxu2004/gpt-neox#a-modified-version-for-polycoder-code-pretraining) to calculate perplexity and HumanEval results as in [the paper](https://arxiv.org/pdf/2202.13169).
+
+### Via Docker
+A *base* Docker image containing a slightly modified version of the [gpt-neox repository](https://github.com/EleutherAI/gpt-neox) is [available via DockerHub](https://hub.docker.com/repository/docker/vhellendoorn/code-lms-neox):
+```
+docker pull vhellendoorn/code-lms-neox:base
+```
+
+This image can be used together with a checkpoint file hosted on this [public Zenodo repository](https://zenodo.org/record/6363556). The base Docker image size is 5.4GB. Once a checkpoint has been retrieved, start the container with the following commands (substituting another GPU device index if needed):
 ```
 nvidia-docker run --rm -it -e NVIDIA_VISIBLE_DEVICES=0 --shm-size=1g --ulimit memlock=-1 --mount type=bind,src=$PWD/checkpoints,dst=/gpt-neox/checkpoints vhellendoorn/code-lms-neox:base
+```
+
+### Code Generation
+The following command can be used to generate code from a prompt:
+```
 sudo ./deepy.py generate.py configs/text_generation.yml checkpoints/configs/local_setup.yml checkpoints/configs/2-7B.yml
 ```
 **Note:** if not using the 2.7B parameter model, replace the final config file with the appropriate model size (e.g., `small` = 160M parameters, `medium` = 405M).
 
-### Usage
-Once the container is up, you can feed it an example such as `def return1():\n  """Returns 1."""\n  ` (note the whitespace tokens) and watch it predict `return 1` (and then probably a bunch of other `returnX` methods, depending on the sample).
+Once the checkpoint has been loaded, you can feed it an example such as `def return1():\n  """Returns 1."""\n  ` (note the whitespace tokens) and watch it predict `return 1` (and then probably a bunch of other `returnX` methods, depending on the sample).
 
 The modifications to gpt-neox mentioned above center around the need to allow tabs and newlines in the prompt input. For the _interactive_ mode, these can be added using their escaped versions (`\t`, `\n`); when using file-based input, the project will read the entire file instead of treating each line as a prompt. By default, the command below will create an interactive prompt and return relatively short outputs (256 tokens) with a sampling temperature of 0.5; this behavior can be changed in `/gpt-neox/checkpoints/configs/text_generation.yml`.
 
-A lower temperature (e.g., 0.2) will produce more consistent and plausible (to the model) predictions; a higher temperature such as the default may be useful for generating and evaluating many candidates (see the [Codex paper](https://arxiv.org/pdf/2107.03374) for recommendations). For the latter setting, consider switching to the `input-file` mode and providing an entire snippet (without escaping whitespace) in the corresponding file
+A lower temperature (e.g., 0.2) will produce more consistent and plausible (to the model) predictions; a higher temperature such as the default may be useful for generating and evaluating many candidates (see [our paper](https://arxiv.org/pdf/2202.13169) for recommendations). For the latter setting, consider switching to the `input-file` mode and providing an entire snippet (without escaping whitespace) in the corresponding file
 
-
-## Models Trained on a 249GB Multi-lingual Corpus<a name="models"></a>
+## Multi-lingual Models<a name="models"></a>
 Several models have been trained on a [large corpus](#data-characteristics) of code spanning 12 programming languages. This includes a 2.7B parameter model (nick-named **PolyCoder**, trained for 100K and 150K steps), a 405M parameter model (100K & 150K steps) and a 160M parameter model (150K steps).
 
 ### Available Models
@@ -107,6 +115,7 @@ I cloned the most popular repositories for 12 popular programming languages with
 Next, similar to Codex and CodeParrot, very large (>1MB) and very short (<100 tokens) files were filtered out, reducing the dataset to 424GB. Files were then deduplicated based on a hash of their content, which reduced the number of files by another 30% or so, leaving 249GB of data and 24.1M files. No tokenization filters were applied; the model processes entire files including all comments. A code-specific vocabulary was constructed on a random 5% subset of the files above.
 
 ## Evaluation
+Please find detailed instructions for replicating our perplexity and HumanEval results on [our public fork](https://github.com/frankxu2004/gpt-neox#a-modified-version-for-polycoder-code-pretraining) of the NeoX repository. This in turn leverages [our extension](https://github.com/frankxu2004/lm-evaluation-harness) of the LM Evaluation Harness.
 
 ### Evaluating Codex
 To download the test sets that we used in the paper (12 programming languages), use:
@@ -115,12 +124,11 @@ wget https://zenodo.org/record/6363556/files/unseen_test_sets.tar.gz
 tar -xvzf unseen_test_sets.tar.gz
 ```
 
-and then:
+To get perplexity results on these samples using Codex' API, use:
 ```
 export OPENAI_API_KEY=<YOUR OPEN AI API KEY>
 python3 -u Evaluation/eval_codex_all.py --dirs Code-sampled100
 ```
-
 Where `<YOUR OPEN AI API KEY>` is a private string that can be obtained by signing up for [OpenAI's beta](https://beta.openai.com/account/api-keys).
 
 As of **March 2022**, getting an API Key is free for 3 months, and afterwards a credit card needs to be entered. However, even after entering a credit card, using our evaluation script does not lead to any costs.
