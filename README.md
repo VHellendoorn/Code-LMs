@@ -7,6 +7,12 @@ I occasionally train and publicly release large neural language models on progra
 4. [Evaluation](#evaluation)
 5. [How to cite](#citation)
 
+### August 2022 - Help wanted! 
+
+We wish to release PolyCoder to the HuggingFace Hub. The first step is converting our checkpoints to HuggingFace format. We know the general direction, but we don't have the capacity to do that any time soon.
+If you are interested in doing the conversion from GPT-NeoX to HuggingFace - we would really appreciate it, and of course, give you the credit in the README and the Huggingface Hub. Please create [an issue](https://github.com/VHellendoorn/Code-LMs/issues), and we can provide additional info. 
+
+
 
 ## Getting Started
 All current models were trained using the [GPT NeoX toolkit](https://github.com/EleutherAI/gpt-neox). First, download a pretrained checkpoint as described below and then use this either with [a Docker image](#via-docker) or through our fork of this toolkit [from source](#from-source) to [generate code](#code-generation) or [replicate our evaluation](#evaluation).
