@@ -5,7 +5,7 @@ This directory contains a script `convert_neox_pt_to_huggingface_neox.py` to con
 transformers 4.23.1
 
 ## Convert
-The script `convert.sh` is an example of converting a 0.4B parameter model to HuggingFace format:
+You can use the `convert.sh` script to convert specified model to the HuggingFace format, using `./convert.sh 0-4B` (or pass a different model size). This script in turn invokes `convert_neox_pt_to_huggingface_neox.py`, which you can also call directly as follows:
 ```
 python convert_neox_pt_to_huggingface_neox.py \
     --checkpoint_dir ../checkpoints/checkpoints-0-4B/global_step150000 \
