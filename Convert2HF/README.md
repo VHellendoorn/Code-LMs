@@ -1,5 +1,6 @@
 # Convert to HuggingFace
 This directory contains a script `convert_neox_pt_to_huggingface_neox.py` to convert PolyCoder checkpoints trained by [gpt-neox](https://github.com/EleutherAI/gpt-neox) into HuggingFace format, and a script `generate.py` to load the converted model and generate code from a given prompt.
+Shoutout to @NinedayWang for implementing this!
 
 ## Environment
 transformers 4.23.1
