@@ -1,17 +1,38 @@
 # Large Models of Source Code
 I occasionally train and publicly release large neural language models on programs, including [PolyCoder](https://arxiv.org/pdf/2202.13169.pdf). Here, I describe how to use these.
 
+## October 2022 - PolyCoder is available on Huggingface!
+Thanks to [@NinedayWang](https://github.com/NinedayWang), PolyCoder is available on the Huggingface Hub!
+
+The available models are:
+* `NinedayWang/PolyCoder-160M`
+* `NinedayWang/PolyCoder-0.4B`
+* `NinedayWang/PolyCoder-2.7B`
+
+To use in Huggingface, simply run (requires the newest version of `transformers`: `pip install transformers==4.23.0` ):
+```
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+tokenizer = AutoTokenizer.from_pretrained("NinedayWang/PolyCoder-2.7B")
+model = AutoModelForCausalLM.from_pretrained("NinedayWang/PolyCoder-2.7B")
+```
+
+The model can be used, for example, by:
+```
+prompt = '''def binarySearch(arr, left, right, x):
+    mid = (left +'''
+input_ids = tokenizer.encode(prompt, return_tensors='pt')
+result = model.generate(input_ids, max_length=50, num_beams=4, num_return_sequences=4)
+for res in result:
+    print(tokenizer.decode(res))
+```
+
+
 1. [Setup](#getting-started)
 2. [Models (incl. PolyCoder)](#models)
 3. [Datasets](#datasets)
 4. [Evaluation](#evaluation)
 5. [How to cite](#citation)
-
-### August 2022 - Help wanted! 
-
-We wish to release PolyCoder to the HuggingFace Hub. The first step is converting our checkpoints to HuggingFace format. We know the general direction, but we don't have the capacity to do that any time soon.
-If you are interested in doing the conversion from GPT-NeoX to HuggingFace - we would really appreciate it, and of course, give you the credit in the README and the Huggingface Hub. Please create [an issue](https://github.com/VHellendoorn/Code-LMs/issues), and we can provide additional info. 
-
 
 
 ## Getting Started
