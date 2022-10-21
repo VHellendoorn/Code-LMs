@@ -10,7 +10,7 @@ The available models are:
 * `NinedayWang/PolyCoder-2.7B`
 
 To use in Huggingface, simply run (requires the newest version of `transformers`: `pip install transformers==4.23.0` ):
-```
+```python
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 tokenizer = AutoTokenizer.from_pretrained("NinedayWang/PolyCoder-2.7B")
@@ -18,7 +18,7 @@ model = AutoModelForCausalLM.from_pretrained("NinedayWang/PolyCoder-2.7B")
 ```
 
 The model can be used, for example, by:
-```
+```python
 prompt = '''def binarySearch(arr, left, right, x):
     mid = (left +'''
 input_ids = tokenizer.encode(prompt, return_tensors='pt')
