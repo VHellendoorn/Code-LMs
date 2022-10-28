@@ -30,7 +30,7 @@ for res in result:
     print(tokenizer.decode(res))
 ```
 
-
+## Table of Contents
 1. [Setup](#getting-started)
 2. [Models (incl. PolyCoder)](#models)
 3. [Datasets](#datasets)
