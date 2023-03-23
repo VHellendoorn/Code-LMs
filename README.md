@@ -140,7 +140,7 @@ The data collection and filtering process is described in detail in [the paper](
 |TypeScript | 12,830 | 9.2G | 1,441,926 |
 
 ### Data Collection & Filtering
-I cloned the most popular repositories for 12 popular programming languages with at least 50 stars (stopping at ~25K per langauge) from GitHub in October 2021. For each project, each file belonging to the majority-language of that project was extracted, yielding the training set below (after cleaning). This initial, unfiltered dataset spanned 631GB and 38.9M files.
+I cloned the most popular repositories for 12 popular programming languages with at least 50 stars (stopping at ~25K per language) from GitHub in October 2021. For each project, each file belonging to the majority-language of that project was extracted, yielding the training set below (after cleaning). This initial, unfiltered dataset spanned 631GB and 38.9M files.
 
 Next, similar to Codex and CodeParrot, very large (>1MB) and very short (<100 tokens) files were filtered out, reducing the dataset to 424GB. Files were then deduplicated based on a hash of their content, which reduced the number of files by another 30% or so, leaving 249GB of data and 24.1M files. No tokenization filters were applied; the model processes entire files including all comments. A code-specific vocabulary was constructed on a random 5% subset of the files above.
 
