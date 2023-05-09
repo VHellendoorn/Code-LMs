@@ -11,6 +11,7 @@ The available models are:
 
 To use in Huggingface, simply run (requires the newest version of `transformers`: `pip install transformers==4.23.0` ):
 ```python
+import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from packaging import version
